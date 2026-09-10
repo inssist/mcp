@@ -1,0 +1,48 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.inssist/inssist-mcp",
+  "description": "Drive your own logged-in Instagram session via the INSSIST extension: read, publish, DMs, analytics.",
+  "title": "INSSIST",
+  "version": "1.0.0",
+  "websiteUrl": "https://inssist.com/feature-guides/inssist-mcp-server-for-ai-agents",
+  "icons": [
+    {
+      "src": "https://inssist.com/images/logo-inssist-org.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "500x500"
+      ]
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/inssist/mcp",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@inssist/mcp",
+      "version": "1.0.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "INSSIST_MCP_PORT",
+          "description": "Loopback port the INSSIST extension dials to reach this server.",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "48231"
+        },
+        {
+          "name": "INSSIST_MCP_HOME",
+          "description": "Directory holding the pairing token file (mcp-pairings.json). Defaults to ~/.inssist.",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

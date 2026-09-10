@@ -1,0 +1,74 @@
+{
+  "name": "@inssist/mcp",
+  "version": "1.0.0",
+  "mcpName": "io.github.inssist/inssist-mcp",
+  "description": "MCP server that drives a real logged-in Instagram session through the INSSIST Chrome extension: read profiles, posts and DMs, publish and schedule content, pull analytics, download media.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "instagram",
+    "instagram-mcp",
+    "instagram-automation",
+    "instagram-dm",
+    "instagram-analytics",
+    "inssist",
+    "social-media",
+    "content-scheduling",
+    "post-scheduler",
+    "ai-agent",
+    "claude",
+    "claude-code",
+    "codex",
+    "cursor",
+    "browser-automation"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "INSSIST",
+    "email": "inssist@slashed.io",
+    "url": "https://inssist.com"
+  },
+  "homepage": "https://inssist.com/feature-guides/inssist-mcp-server-for-ai-agents",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inssist/mcp.git"
+  },
+  "bugs": {
+    "email": "inssist@slashed.io",
+    "url": "https://inssist.com/feature-guides/inssist-mcp-server-for-ai-agents"
+  },
+  "type": "module",
+  "bin": {
+    "inssist-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "mcp-bridge-manifest.json",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "sync-manifest": "node scripts/sync-manifest.mjs",
+    "build": "npm run sync-manifest && tsc -p tsconfig.json",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "prepublishOnly": "npm test",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.2",
+    "@types/ws": "^8.18.1",
+    "typescript": "^5.9.3"
+  }
+}

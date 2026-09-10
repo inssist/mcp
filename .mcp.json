@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "inssist": {
+      "command": "npx",
+      "args": ["-y", "@inssist/mcp"]
+    }
+  }
+}
