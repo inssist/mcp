@@ -1,0 +1,16 @@
+{
+  "name": "inssist",
+  "owner": { "name": "INSSIST", "email": "inssist@slashed.io", "url": "https://inssist.com" },
+  "metadata": { "description": "INSSIST for Instagram: the MCP server that lets Claude work inside your own logged-in Instagram session." },
+  "plugins": [
+    {
+      "name": "inssist",
+      "source": "./",
+      "description": "Drive your own logged-in Instagram session through the INSSIST extension: read profiles, posts and DMs, publish and schedule content, pull analytics, download media.",
+      "version": "1.0.1",
+      "category": "productivity",
+      "homepage": "https://inssist.com/feature-guides/inssist-mcp-server-for-ai-agents",
+      "keywords": ["instagram", "instagram-mcp", "social-media"]
+    }
+  ]
+}
