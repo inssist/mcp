@@ -3,7 +3,7 @@
   "name": "io.github.inssist/inssist-mcp",
   "description": "Drive your own logged-in Instagram session via the INSSIST extension: read, publish, DMs, analytics.",
   "title": "INSSIST",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "websiteUrl": "https://inssist.com/feature-guides/inssist-mcp-server-for-ai-agents",
   "icons": [
     {
@@ -23,7 +23,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@inssist/mcp",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"

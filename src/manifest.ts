@@ -20,12 +20,22 @@ const SNAPSHOT_PATH = fileURLToPath(new URL('../mcp-bridge-manifest.json', impor
 
 export type McpToolShape = {
   name: string
+  title: string
   description: string
   inputSchema: {
     type: 'object'
     properties: Record<string, { type: string; description: string }>
     required?: string[]
   }
+  annotations: McpToolAnnotations
+}
+
+/** The MCP `ToolAnnotations` hints a harness uses to decide how loudly to ask before a call. */
+export type McpToolAnnotations = {
+  title: string
+  readOnlyHint: boolean
+  destructiveHint: boolean
+  openWorldHint: boolean
 }
 
 export const loadBundledManifest = (): BridgeManifestEntry[] => {
@@ -54,15 +64,54 @@ export const toMcpTool = (entry: BridgeManifestEntry): McpToolShape => {
         ? [...entry.params, INSTANCE_PARAM]
         : [...entry.params, INSTANCE_PARAM, INSTANT_PARAM]
 
+  const annotations = annotate(entry)
   return {
     name: entry.name,
+    title: annotations.title,
     description: describe(entry),
     inputSchema: {
       type: 'object',
       properties: Object.fromEntries(params.map(toProperty)),
       ...(required.length ? { required } : {}),
     },
+    annotations,
   }
+}
+
+/**
+ * Hints derive from what the manifest already knows. `risk` is declared per tool in the
+ * extension source (`read` never mutates); `paced` marks the tools that stay inside INSSIST's
+ * own storage and never touch Instagram (closed world). Destructiveness is the one fact the
+ * manifest does not carry: the spec's default is "may be destructive", so the explicit set
+ * below is what lets a harness auto-approve `dm_send` yet always confirm `ig_post_delete`.
+ */
+export const annotate = (entry: BridgeManifestEntry): McpToolAnnotations => ({
+  title: titleOf(entry.name),
+  readOnlyHint: entry.risk === 'read',
+  destructiveHint: entry.risk !== 'read' && DESTRUCTIVE_TOOLS.has(entry.name),
+  openWorldHint: entry.name !== ACCOUNT_INFO_TOOL && entry.paced !== false,
+})
+
+/** Tools that delete, overwrite or sever something that exists; everything else only adds. */
+const DESTRUCTIVE_TOOLS = new Set([
+  'comment_delete',
+  'dm_remove',
+  'draft_delete',
+  'draft_update',
+  'downloads_cancel',
+  'ig_action', // unfollow
+  'ig_block',
+  'ig_post_delete',
+  'ig_post_edit',
+  'profile_update',
+])
+
+const TITLE_WORDS: Record<string, string> = { ig: 'Instagram', dm: 'DM', csv: 'CSV', info: 'info' }
+
+/** `ig_fetch_posts` -> "Instagram fetch posts"; the harness shows this next to the raw name. */
+const titleOf = (name: string) => {
+  const title = name.split('_').map(word => TITLE_WORDS[word] ?? word).join(' ')
+  return title.charAt(0).toUpperCase() + title.slice(1)
 }
 
 /** The one tool the server answers itself, by fanning out over every paired browser. */

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 (2026-09-11)
+
+- Tool annotations (`title`, `readOnlyHint`, `destructiveHint`, `openWorldHint`) on every tool,
+  so harnesses can auto-approve reads and confirm deletes.
+
 ## 1.0.0 (2026-09-10)
 
 First public release.

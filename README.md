@@ -118,7 +118,7 @@ A few shapes worth knowing:
   `downloads_start` → `downloads_status`.
 - **`*_export`** writes the full list to a CSV via Chrome's downloads and returns the path, for
   lists too large to stream into an agent's context.
-- **Assets** for `draft_create` are local file paths (the server reads them) or http(s) URLs
+- **`Assets`** for `draft_create` are local file paths (the server reads them) or http(s) URLs
   (the extension downloads them). Up to 100 MB per file, 200 MB per call.
 - **`instance`** (every tool but `account_info`): which connected browser profile to use.
   Defaults to the active one.
