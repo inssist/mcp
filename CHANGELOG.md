@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2 (2026-09-11)
+
+- Fix: the server exited when a harness restarted it while the previous process was still
+  releasing the port (Claude Desktop does this in the same millisecond), so the new process
+  saw EADDRINUSE and then ECONNRESET on the peer dial. `start()` now retries for up to 5 s.
+
 ## 1.0.1 (2026-09-11)
 
 - Tool annotations (`title`, `readOnlyHint`, `destructiveHint`, `openWorldHint`) on every tool,

@@ -49,6 +49,14 @@ export const PEER_PATH = '/peer'
 /** Delay before a peer that lost its hub, and could not take the port itself, dials again. */
 export const PEER_RETRY_MS = 1_000
 
+/**
+ * How long `Bridge.start()` keeps trying before giving up on the port. A harness that restarts
+ * the server (Claude Desktop does it in the same millisecond) leaves the old hub still dying
+ * when the new process arrives: the bind says EADDRINUSE, the peer dial says ECONNRESET.
+ * Neither means the port is actually owned by someone else; a moment later the bind succeeds.
+ */
+export const START_RETRY_WINDOW_MS = 5_000
+
 /** A tool call that has not answered by then is reported as a timeout, not left hanging. */
 export const CALL_TIMEOUT_MS = 120_000
 

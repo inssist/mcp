@@ -1,4 +1,4 @@
-import { PACKAGE_NAME, PEER_RETRY_MS } from './constants.js'
+import { PACKAGE_NAME, PEER_RETRY_MS, START_RETRY_WINDOW_MS } from './constants.js'
 import { BridgeHub } from './bridge-hub.js'
 import { BridgePeer } from './bridge-peer.js'
 import type { PairingStore } from './pairing-store.js'
@@ -34,9 +34,23 @@ export class Bridge implements BridgeLink {
     this.options = options
   }
 
-  /** Rejects only when the port is taken by something that is not a hub, or cannot be bound at all. */
+  /**
+   * Rejects only when, for the whole retry window, the port stays taken by something that is
+   * not a hub or cannot be bound at all. A hub that is still shutting down (EADDRINUSE on bind,
+   * then ECONNRESET or ECONNREFUSED on the peer dial) clears within that window.
+   */
   async start() {
-    await this.becomeHubOrPeer()
+    const deadline = Date.now() + START_RETRY_WINDOW_MS
+    for (;;) {
+      try {
+        await this.becomeHubOrPeer()
+        return
+      } catch (error) {
+        if (this.closed || Date.now() >= deadline) throw error
+        this.options.log(`Bridge start failed (${(error as Error).message || String(error)}), retrying`)
+        await new Promise(resolve => setTimeout(resolve, PEER_RETRY_MS))
+      }
+    }
   }
 
   get role() {

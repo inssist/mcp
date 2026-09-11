@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import WebSocket from 'ws'
+import { createServer } from 'node:net'
 import { Bridge } from '../dist/bridge.js'
 
 const pairings = { serverId: 'srv', getToken: () => null, setToken: () => {} }
@@ -92,3 +93,18 @@ test('a web page cannot open the peer path', async () => {
 })
 
 const hubPort = bridge => bridge.link.port
+
+test('start survives a hub that is still dying on the port', async () => {
+  // A raw TCP listener that resets every connection stands in for a hub mid-shutdown: the bind
+  // fails with EADDRINUSE and the peer dial with ECONNRESET. It goes away after a moment.
+  const dying = createServer(socket => socket.destroy())
+  await new Promise(resolve => dying.listen(0, '127.0.0.1', resolve))
+  const port = dying.address().port
+  setTimeout(() => dying.close(), 700)
+
+  const started = Date.now()
+  const { bridge } = await startBridge(port)
+  assert.equal(bridge.role, 'hub')
+  assert.ok(Date.now() - started >= 500, 'should have waited for the port')
+  bridge.close()
+})
