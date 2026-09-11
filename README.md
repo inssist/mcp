@@ -52,8 +52,12 @@ claude mcp add inssist -- npx -y @inssist/mcp
 codex mcp add inssist -- npx -y @inssist/mcp
 ```
 
-**Claude Desktop, Cursor, Windsurf, Gemini CLI and any other client**: add this to its MCP
-config (Claude Desktop: Settings → Developer → Edit Config; Cursor: `.cursor/mcp.json`):
+**Claude Desktop, including Cowork**: download
+[inssist-mcp.mcpb](https://github.com/inssist/mcp/releases/latest/download/inssist-mcp.mcpb)
+and double-click it. One step, runs on Claude's built-in Node.js, no terminal needed.
+
+**Cursor, Windsurf, Gemini CLI and any other client**: add this to its MCP config (Cursor:
+`.cursor/mcp.json`):
 
 ```json
 { "mcpServers": { "inssist": { "command": "npx", "args": ["-y", "@inssist/mcp"] } } }
