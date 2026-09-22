@@ -99,6 +99,7 @@ const DESTRUCTIVE_TOOLS = new Set([
   'draft_delete',
   'draft_update',
   'downloads_cancel',
+  'follower_remove',
   'ig_action', // unfollow
   'ig_block',
   'ig_post_delete',

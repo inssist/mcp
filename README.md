@@ -7,8 +7,12 @@
 The MCP server that lets an AI agent work inside **your own logged-in Instagram session**,
 through the [INSSIST](https://inssist.com) Chrome extension.
 
+Complete docs and install: https://inssist.com/instagram-mcp
+                                                            
+## Why
+
 Every other Instagram MCP wraps the Graph API: business accounts only, no Stories, no music, no
-DMs, only what Meta chooses to expose. This one drives the browser you are already signed into,
+DMs, only what Meta chooses to expose. INSSIST drives the browser you are already signed into,
 so Claude Code, Codex, Cursor or Claude Desktop can read profiles and DMs, publish and schedule
 posts, reels and stories with music, pull insights and audience reports, and download media, on
 a personal, creator or business account alike.
@@ -20,10 +24,10 @@ each tool call to the extension over loopback, and the extension answers from th
 Claude Code / Codex / Cursor / Claude Desktop
   │  stdio (MCP)
   ▼
-@inssist/mcp                    ← this package, runs on your machine
+@inssist/mcp
   │  ws://127.0.0.1:48231
   ▼
-INSSIST extension (Chrome)
+INSSIST Browser Extension
   │
   ▼
 Instagram, in your own session
@@ -92,7 +96,7 @@ Download the last 20 posts from @natgeo to my machine.
 
 ## Tools
 
-58 tools, grouped the way the extension's **Tools & features** panel groups them. **PRO** marks
+60 tools, grouped the way the extension's **Tools & features** panel groups them. **PRO** marks
 tools that need an [INSSIST PRO](https://inssist.com/#pricing) subscription; everything else is
 free, with no rate limit beyond INSSIST's own pacing. A PRO tool called without a subscription
 answers with a short message and an upgrade link instead of failing, so the agent can relay it.
@@ -102,8 +106,8 @@ answers with a short message and an upgrade link instead of failing, so the agen
 | Account         | `account_info`, `account_switch`                                                                                              |
 | Profile         | `profile_update`, `note_set`                                                                                                  |
 | Read data       | `ig_fetch_profile`, `ig_fetch_posts`, `ig_fetch_post`, `ig_fetch_stories`, `ig_fetch_saved`, `ig_search`                      |
-| Engagement      | `story_viewers`, `notifications_list`, `follow_requests_list`                                                                 |
-| Comments        | `comments_list`                                                                                                               |
+| Engagement      | `story_viewers`, `notifications_list`, `events_check`, `follow_requests_list`, `follower_remove`, `ig_block`                  |
+| Comments        | `comments_list`, `comment_add`, `comment_reply`, `comment_like`, `comment_delete`                                             |
 | Direct messages | `dm_list`, `dm_requests`, `dm_read`, `dm_send`, `dm_mark_seen`, `dm_accept`, `dm_remove`                                      |
 | Publishing      | `draft_create`, `draft_schedule`, `draft_publish`, `draft_get`, `draft_update`, `draft_delete`, `draft_list`, `draft_reorder` |
 | Posting         | `ig_post_edit`, `ig_post_delete`, `location_search`, `music_search`                                                           |

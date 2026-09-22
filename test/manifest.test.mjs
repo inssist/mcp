@@ -49,7 +49,7 @@ test('annotations follow risk, pacing and the destructive set', () => {
     openWorldHint: true,
   })
   assert.equal(toMcpTool(entry()).title, 'Instagram fetch profile')
-  assert.deepEqual(annotate(entry({ name: 'dm_send', risk: 'write' })), {
+  assert.deepEqual(annotate(entry({ name: 'dm_send', risk: 'action' })), {
     title: 'DM send',
     readOnlyHint: false,
     destructiveHint: false,

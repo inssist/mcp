@@ -1,6 +1,6 @@
 {
   "name": "@inssist/mcp",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "mcpName": "io.github.inssist/inssist-mcp",
   "description": "MCP server that drives a real logged-in Instagram session through the INSSIST Chrome extension: read profiles, posts and DMs, publish and schedule content, pull analytics, download media.",
   "keywords": [
@@ -29,7 +29,7 @@
     "email": "inssist@slashed.io",
     "url": "https://inssist.com"
   },
-  "homepage": "https://inssist.com/feature-guides/inssist-mcp-server-for-ai-agents",
+  "homepage": "https://inssist.com/instagram-mcp",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/inssist/mcp.git"

@@ -4,7 +4,7 @@
   "tools": [
     {
       "name": "account_info",
-      "description": "List connected browser instances, the account each is logged into, other available accounts, and the default target. Pass an instance id as `instance`; switch with account_switch.",
+      "description": "List connected browser instances, the account each is logged into, other available accounts, and the default target. `proTrialDaysLeft` > 0 means PRO write tools answer for that many more days.",
       "params": [],
       "pro": false,
       "risk": "read",
@@ -59,7 +59,7 @@
     },
     {
       "name": "comment_add",
-      "description": "Post a comment on a post.",
+      "description": "Post a comment on a post. Rate-limited calls return `done: false`.",
       "params": [
         {
           "name": "post",
@@ -80,7 +80,7 @@
     },
     {
       "name": "comment_delete",
-      "description": "Delete a comment — your own, or any on your own post. Permanent.",
+      "description": "Delete a comment — your own, or any on your own post. Permanent. Rate-limited calls return `done: false`.",
       "params": [
         {
           "name": "post",
@@ -101,7 +101,7 @@
     },
     {
       "name": "comment_like",
-      "description": "Like a comment, or unlike with `unlike: true`.",
+      "description": "Like a comment, or unlike with `unlike: true`. Rate-limited calls return `done: false`.",
       "params": [
         {
           "name": "commentId",
@@ -122,7 +122,7 @@
     },
     {
       "name": "comment_reply",
-      "description": "Reply to a comment.",
+      "description": "Reply to a comment. Rate-limited calls return `done: false`.",
       "params": [
         {
           "name": "post",
@@ -191,7 +191,7 @@
     },
     {
       "name": "dm_list",
-      "description": "List recent DM conversations, the last message, and whether a reply is awaited. Read-only.",
+      "description": "List recent DM conversations, the last message, and whether a reply is awaited. Returns Instagram's single inbox page, which cannot be paged further. Read-only.",
       "params": [],
       "pro": false,
       "risk": "read",
@@ -214,13 +214,19 @@
     },
     {
       "name": "dm_read",
-      "description": "Read a DM conversation's recent messages, oldest first. Read-only.",
+      "description": "Read a DM conversation's messages, oldest first. Returns the newest `limit` messages; raise `limit` to reach older ones. `has_more` means older messages were cut off. Read-only.",
       "params": [
         {
           "name": "thread_id",
           "type": "string",
           "description": "Conversation id from dm_list.",
           "required": true
+        },
+        {
+          "name": "limit",
+          "type": "number",
+          "description": "How many of the newest messages to return, 1-200 (default 20).",
+          "required": false
         }
       ],
       "pro": true,
@@ -244,7 +250,7 @@
     },
     {
       "name": "dm_requests",
-      "description": "List pending DM message requests (cold inbound from non-connections, which do not appear in dm_list until accepted). Read-only.",
+      "description": "List pending DM message requests (cold inbound from non-connections, which do not appear in dm_list until accepted). Returns Instagram's single requests page, which cannot be paged further. Read-only.",
       "params": [],
       "pro": false,
       "risk": "read",
@@ -252,7 +258,7 @@
     },
     {
       "name": "dm_send",
-      "description": "Send a text message to an existing DM conversation, by thread_id (from dm_list) or username. Will not start a new conversation with someone you have never messaged.",
+      "description": "Send a text message by thread_id (from dm_list) or username. A username never messaged before gets a new conversation, which lands in their message requests; those cold sends are capped per day. Rate-limited calls return `done: false`.",
       "params": [
         {
           "name": "thread_id",
@@ -263,7 +269,7 @@
         {
           "name": "username",
           "type": "string",
-          "description": "Recipient handle of an existing conversation. Provide this or `thread_id`.",
+          "description": "Recipient handle. Provide this or `thread_id`.",
           "required": false
         },
         {
@@ -274,7 +280,7 @@
         }
       ],
       "pro": true,
-      "risk": "write",
+      "risk": "action",
       "source": "actor"
     },
     {
@@ -385,7 +391,49 @@
         {
           "name": "mentions",
           "type": "array",
-          "description": "Usernames to tag, without @. Up to 20.",
+          "description": "Usernames to tag in the photo, without @. Up to 20. Not the same as writing @name in the caption.",
+          "required": false
+        },
+        {
+          "name": "collaborators",
+          "type": "array",
+          "description": "Usernames to invite as collaborators (co-authors), without @. Up to 5. Each is asked to accept, and the post then shows on their profile too. Posts and reels only.",
+          "required": false
+        },
+        {
+          "name": "closeFriends",
+          "type": "boolean",
+          "description": "Story only: share with Close Friends instead of everyone.",
+          "required": false
+        },
+        {
+          "name": "linkUrl",
+          "type": "string",
+          "description": "Story only: http(s) URL for a link sticker.",
+          "required": false
+        },
+        {
+          "name": "stickerText",
+          "type": "string",
+          "description": "Story only: text sticker content.",
+          "required": false
+        },
+        {
+          "name": "hideLikes",
+          "type": "boolean",
+          "description": "Hide like and view counts.",
+          "required": false
+        },
+        {
+          "name": "disableComments",
+          "type": "boolean",
+          "description": "Turn off commenting.",
+          "required": false
+        },
+        {
+          "name": "shareToFeed",
+          "type": "boolean",
+          "description": "Reel only: also show it in the feed. Default true.",
           "required": false
         },
         {
@@ -557,7 +605,49 @@
         {
           "name": "mentions",
           "type": "array",
-          "description": "Usernames to tag, without @, replacing the current tags. Empty array removes them all.",
+          "description": "Usernames to tag in the photo, without @, replacing the current tags. Empty array removes them all.",
+          "required": false
+        },
+        {
+          "name": "collaborators",
+          "type": "array",
+          "description": "Usernames to invite as collaborators (co-authors), without @, replacing the current ones. Up to 5. Empty array removes them all.",
+          "required": false
+        },
+        {
+          "name": "closeFriends",
+          "type": "boolean",
+          "description": "Story only: share with Close Friends instead of everyone.",
+          "required": false
+        },
+        {
+          "name": "linkUrl",
+          "type": "string",
+          "description": "Story only: http(s) URL for a link sticker.",
+          "required": false
+        },
+        {
+          "name": "stickerText",
+          "type": "string",
+          "description": "Story only: text sticker content.",
+          "required": false
+        },
+        {
+          "name": "hideLikes",
+          "type": "boolean",
+          "description": "Hide like and view counts.",
+          "required": false
+        },
+        {
+          "name": "disableComments",
+          "type": "boolean",
+          "description": "Turn off commenting.",
+          "required": false
+        },
+        {
+          "name": "shareToFeed",
+          "type": "boolean",
+          "description": "Reel only: also show it in the feed. Default true.",
           "required": false
         },
         {
@@ -573,6 +663,27 @@
       "paced": false
     },
     {
+      "name": "events_check",
+      "description": "New Instagram activity since a cursor, in one request: never waits. Returns the events and the cursor to pass back next time. First call without a cursor returns only the cursor. Check on the schedule the user asked for, minutes apart, not in a loop. Read-only.",
+      "params": [
+        {
+          "name": "kinds",
+          "type": "array",
+          "description": "Any of: dm, dm_requests, comments, likes, follows, mentions. Default: dm and dm_requests, the cheapest to check.",
+          "required": false
+        },
+        {
+          "name": "cursor",
+          "type": "string",
+          "description": "From the previous events_check answer. Omit on the first call.",
+          "required": false
+        }
+      ],
+      "pro": true,
+      "risk": "read",
+      "source": "actor"
+    },
+    {
       "name": "follow_requests_list",
       "description": "List pending follow requests to your account.",
       "params": [
@@ -585,6 +696,21 @@
       ],
       "pro": true,
       "risk": "read",
+      "source": "actor"
+    },
+    {
+      "name": "follower_remove",
+      "description": "Remove an account from your followers without blocking it. They are not notified and can follow again. Use this, not ig_block, when asked to remove a follower. Rate-limited calls return `done: false`.",
+      "params": [
+        {
+          "name": "user",
+          "type": "string",
+          "description": "Account: username, profile URL, or numeric id.",
+          "required": true
+        }
+      ],
+      "pro": true,
+      "risk": "action",
       "source": "actor"
     },
     {
@@ -683,7 +809,7 @@
     },
     {
       "name": "ig_action",
-      "description": "Like, unlike, follow or unfollow. One target per call.",
+      "description": "Like, unlike, follow or unfollow. One target per call. Rate-limited calls return `done: false`.",
       "params": [
         {
           "name": "type",
@@ -716,7 +842,7 @@
     },
     {
       "name": "ig_block",
-      "description": "Block an account, or unblock with `unblock: true`. Blocking cuts all contact and hides your profile from them.",
+      "description": "Block an account, or unblock with `unblock: true`. Blocking cuts all contact and hides your profile from them. Rate-limited calls return `done: false`.",
       "params": [
         {
           "name": "user",
