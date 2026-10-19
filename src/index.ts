@@ -188,9 +188,28 @@ const callTool = async (
     const upsell = readUpsell(result)
     if (upsell) return { content: [{ type: 'text' as const, text: upsell }] }
 
-    return { content: [{ type: 'text' as const, text: stringify(result) }] }
+    return toContent(result)
   } catch (error) {
     return errorResult((error as Error).message || String(error))
+  }
+}
+
+/**
+ * A result carrying `image: {mime, base64}` (draft_preview) becomes an image block the client can
+ * show, with the rest of the result as text beside it, instead of a wall of base64.
+ */
+const toContent = (result: unknown) => {
+  const image = (result as { image?: { mime?: unknown; base64?: unknown } } | null)?.image
+  if (!image || typeof image.mime !== 'string' || typeof image.base64 !== 'string') {
+    return { content: [{ type: 'text' as const, text: stringify(result) }] }
+  }
+
+  const { image: _image, ...rest } = result as Record<string, unknown>
+  return {
+    content: [
+      { type: 'image' as const, data: image.base64, mimeType: image.mime },
+      { type: 'text' as const, text: stringify(rest) },
+    ],
   }
 }
 

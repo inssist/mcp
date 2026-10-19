@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.1.1 (2026-10-14)
+
+- `dm_send` takes `force` to send a new conversation past the daily cold-DM limit, for when the
+  user explicitly asks to. The limit's decline message now mentions it.
+
+## 2.1.0 (2026-10-07)
+
+- New tool `ig_hashtag_posts`: a hashtag's posts page by page, with owners and slide counts.
+- New tool `draft_preview`: the post rendered as it will publish, returned as an image. Needs
+  this server version; older servers are not offered it.
+- `draft_create` / `draft_update` gained `sticker`, `linkSticker` and `locationSticker` to place
+  and style story stickers; `draft_create` takes `at` to schedule in the same call.
+- `account_info` reports the browser `timeZone` that times without an offset are read in, and
+  `scheduledFor` is given in that time zone with its offset; `draft_update` reports the place a
+  `location` matched.
+
 ## 2.0.0 (2026-09-22)
 
 Two new tools, seven fields for controlling scheduling, and `dm_send` can now facilitate outreach,

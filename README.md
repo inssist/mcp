@@ -109,7 +109,7 @@ answers with a short message and an upgrade link instead of failing, so the agen
 | Engagement      | `story_viewers`, `notifications_list`, `events_check`, `follow_requests_list`, `follower_remove`, `ig_block`                  |
 | Comments        | `comments_list`, `comment_add`, `comment_reply`, `comment_like`, `comment_delete`                                             |
 | Direct messages | `dm_list`, `dm_requests`, `dm_read`, `dm_send`, `dm_mark_seen`, `dm_accept`, `dm_remove`                                      |
-| Publishing      | `draft_create`, `draft_schedule`, `draft_publish`, `draft_get`, `draft_update`, `draft_delete`, `draft_list`, `draft_reorder` |
+| Publishing      | `draft_create`, `draft_schedule`, `draft_publish`, `draft_get`, `draft_preview`, `draft_update`, `draft_delete`, `draft_list`, `draft_reorder` |
 | Posting         | `ig_post_edit`, `ig_post_delete`, `location_search`, `music_search`                                                           |
 | Insights        | `insights_collect`, `insights_report`                                                                                         |
 | Audience        | `unfollowers_scan` / `_report` / `_export`, `antibot_scan` / `_report` / `_export`, `peers_scan` / `_report` / `_export`      |

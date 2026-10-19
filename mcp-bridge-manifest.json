@@ -4,7 +4,7 @@
   "tools": [
     {
       "name": "account_info",
-      "description": "List connected browser instances, the account each is logged into, other available accounts, and the default target. `proTrialDaysLeft` > 0 means PRO write tools answer for that many more days.",
+      "description": "List connected browser instances, the account each is logged into, other available accounts, and the default target. `proTrialDaysLeft` > 0 means PRO write tools answer for that many more days; absent when `pro` is true.",
       "params": [],
       "pro": false,
       "risk": "read",
@@ -258,7 +258,7 @@
     },
     {
       "name": "dm_send",
-      "description": "Send a text message by thread_id (from dm_list) or username. A username never messaged before gets a new conversation, which lands in their message requests; those cold sends are capped per day. Rate-limited calls return `done: false`.",
+      "description": "Send a text message by thread_id (from dm_list) or username. A username never messaged before gets a new conversation, which lands in their message requests; those cold sends are capped per day. Rate-limited calls return `done: false`. The conversation is read back after the send: `confirmed: false` means Instagram took it but it does not show there (`verified: false`: the read-back failed), tell the user to check the chat before sending it again.",
       "params": [
         {
           "name": "thread_id",
@@ -277,6 +277,12 @@
           "type": "string",
           "description": "Message text.",
           "required": true
+        },
+        {
+          "name": "force",
+          "type": "boolean",
+          "description": "True to send a new conversation past the daily cold-DM limit. Only when the user explicitly asks for it: more cold DMs raise the risk of an Instagram block.",
+          "required": false
         }
       ],
       "pro": true,
@@ -350,7 +356,7 @@
     },
     {
       "name": "draft_create",
-      "description": "Create a draft post in INSSIST Post Assistant from photos/videos. Not published/scheduled — follow with draft_schedule or draft_publish using the returned draftId. Opens an Instagram tab if needed.",
+      "description": "Create a draft post in INSSIST Post Assistant from photos/videos. Pass `at` to also schedule it, otherwise follow with draft_schedule or draft_publish using the returned draftId. Opens an Instagram tab if needed.",
       "params": [
         {
           "name": "assets",
@@ -362,6 +368,12 @@
           "name": "caption",
           "type": "string",
           "description": "Caption, incl. hashtags and @mentions.",
+          "required": false
+        },
+        {
+          "name": "at",
+          "type": "string",
+          "description": "Optional publish time, as in draft_schedule.",
           "required": false
         },
         {
@@ -385,7 +397,7 @@
         {
           "name": "location",
           "type": "string",
-          "description": "Place name to tag; first Instagram match wins.",
+          "description": "Place name to tag; first Instagram match wins, see `location` in the result.",
           "required": false
         },
         {
@@ -416,6 +428,24 @@
           "name": "stickerText",
           "type": "string",
           "description": "Story only: text sticker content.",
+          "required": false
+        },
+        {
+          "name": "sticker",
+          "type": "object",
+          "description": "Story only: text sticker layout, all fields optional. x, y = its centre as 0-1 of frame width/height from top-left (default 0.5, 0.6); scale 0.3-1.7 (default 0.75); rotation in degrees clockwise; variant default|white|solid|black|rainbow|black-text|white-text|sunset|ocean|neon-green|pastel-pink|elegant|typewriter|inssist; align left|center|right. May shift to stay inside the frame; see `stickers` in the result.",
+          "required": false
+        },
+        {
+          "name": "linkSticker",
+          "type": "object",
+          "description": "Story only: link sticker layout, fields as in `sticker` except align. Default y 0.85.",
+          "required": false
+        },
+        {
+          "name": "locationSticker",
+          "type": "object",
+          "description": "Story only: location sticker layout, fields as in `sticker` except align. Default y 0.15.",
           "required": false
         },
         {
@@ -503,6 +533,22 @@
       "paced": false
     },
     {
+      "name": "draft_preview",
+      "description": "Render a post as it will publish, stickers and framing included, to check the layout. Returns an image of the first slide; a video shows its cover frame.",
+      "params": [
+        {
+          "name": "draftId",
+          "type": "string",
+          "description": "Post id from draft_create or draft_list.",
+          "required": true
+        }
+      ],
+      "pro": true,
+      "risk": "read",
+      "source": "actor",
+      "paced": false
+    },
+    {
       "name": "draft_publish",
       "description": "Publish a draft to Instagram now — immediate and cannot be undone here. Waits up to ~45s for the result; a slower upload continues in the background (see draft_list).",
       "params": [
@@ -547,7 +593,7 @@
         {
           "name": "at",
           "type": "string",
-          "description": "Publish time, ISO 8601. No offset = browser local time, e.g. \"2026-08-22T18:30\". Must be future.",
+          "description": "Publish time, ISO 8601, must be future. Without an offset it is read in the browser's time zone (see timeZone in account_info), e.g. \"2026-08-22T18:30\".",
           "required": true
         }
       ],
@@ -558,7 +604,7 @@
     },
     {
       "name": "draft_update",
-      "description": "Edit an unpublished post: caption, scheduled time, type, music, place, tags or framing. Pass at least one field; others unchanged. Published or publishing posts cannot be edited.",
+      "description": "Edit an unpublished post: caption, scheduled time, type, music, place, tags, stickers or framing. Pass at least one field; others unchanged. Published or publishing posts cannot be edited.",
       "params": [
         {
           "name": "draftId",
@@ -575,7 +621,7 @@
         {
           "name": "at",
           "type": "string",
-          "description": "New publish time for an already scheduled post, ISO 8601, must be future. To schedule a draft for the first time use draft_schedule.",
+          "description": "New publish time for an already scheduled post, ISO 8601, must be future; no offset = browser's time zone. To schedule a draft for the first time use draft_schedule.",
           "required": false
         },
         {
@@ -599,7 +645,7 @@
         {
           "name": "location",
           "type": "string",
-          "description": "Place name to tag; first Instagram match wins. Empty string removes the place.",
+          "description": "Place name to tag; first Instagram match wins, see `location` in the result. Empty string removes the place.",
           "required": false
         },
         {
@@ -630,6 +676,24 @@
           "name": "stickerText",
           "type": "string",
           "description": "Story only: text sticker content.",
+          "required": false
+        },
+        {
+          "name": "sticker",
+          "type": "object",
+          "description": "Story only: text sticker layout, all fields optional. x, y = its centre as 0-1 of frame width/height from top-left (default 0.5, 0.6); scale 0.3-1.7 (default 0.75); rotation in degrees clockwise; variant default|white|solid|black|rainbow|black-text|white-text|sunset|ocean|neon-green|pastel-pink|elegant|typewriter|inssist; align left|center|right. May shift to stay inside the frame; see `stickers` in the result.",
+          "required": false
+        },
+        {
+          "name": "linkSticker",
+          "type": "object",
+          "description": "Story only: link sticker layout, fields as in `sticker` except align. Default y 0.85.",
+          "required": false
+        },
+        {
+          "name": "locationSticker",
+          "type": "object",
+          "description": "Story only: location sticker layout, fields as in `sticker` except align. Default y 0.15.",
           "required": false
         },
         {
@@ -955,6 +1019,27 @@
       "source": "actor"
     },
     {
+      "name": "ig_hashtag_posts",
+      "description": "Posts for a hashtag, as on Instagram's hashtag search page. One page per call.",
+      "params": [
+        {
+          "name": "tag",
+          "type": "string",
+          "description": "Hashtag, with or without #.",
+          "required": true
+        },
+        {
+          "name": "cursor",
+          "type": "string",
+          "description": "Resume token from a previous call's cursor. Omit for the first page.",
+          "required": false
+        }
+      ],
+      "pro": false,
+      "risk": "read",
+      "source": "actor"
+    },
+    {
       "name": "ig_post_delete",
       "description": "Permanently delete a published Instagram post. Own posts only. This cannot be undone. To remove an unpublished draft or a scheduled post from the queue, use draft_delete instead.",
       "params": [
@@ -1196,6 +1281,12 @@
           "name": "type",
           "type": "string",
           "description": "Collect followers (default) or following.",
+          "required": false
+        },
+        {
+          "name": "limit",
+          "type": "number",
+          "description": "Max accounts to collect, default 2500. Larger lists take ~0.35 s per account.",
           "required": false
         }
       ],
