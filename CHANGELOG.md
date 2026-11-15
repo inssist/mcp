@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.2.0 (2026-11-15)
+
+- `draft_create` / `draft_update` take `linkText` to label a story link sticker (up to 60 chars,
+  defaults to the URL's domain).
+- `ig_action` and the comment tools say why a call did not go through: `done: false` now comes
+  with a `reason`, e.g. `comments_disabled`, not only on rate limits.
+- `ig_fetch_posts` reports whether each post is pinned, has comments turned off or is liked by
+  you, and lists pinned posts first.
+- `draft_schedule` describes Cloud Scheduling: `draft_get` shows whether a post publishes from
+  the cloud, with no Chrome needed, or locally.
+
 ## 2.1.1 (2026-10-14)
 
 - `dm_send` takes `force` to send a new conversation past the daily cold-DM limit, for when the

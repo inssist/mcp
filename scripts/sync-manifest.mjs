@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
  *
  * Two homes, two behaviours:
  *   - in the INSSIST monorepo the extension source is the single source of truth (written by
- *     `inssist-ext/scripts/paralayer.ts` on the extension build), so the copy is refreshed on
+ *     `inssist-ext/tools/paralayer.ts` on the extension build), so the copy is refreshed on
  *     every `npm run build` and a manifest without tools is a hard error;
  *   - in the public `inssist/mcp` repo there is no extension source: the committed snapshot
  *     *is* the input, and this script is a no-op that says so.
